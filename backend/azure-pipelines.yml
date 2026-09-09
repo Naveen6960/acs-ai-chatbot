@@ -1,0 +1,75 @@
+# Starter pipeline
+# Start with a minimal pipeline that you can customize to build and deploy your code.
+# Add steps that build, run tests, deploy, and more:
+# https://aka.ms/yaml
+
+trigger:
+- none
+
+pool:
+  name: ACS-AZURE-NP-AGENT
+
+stages:
+- stage: 'BuildApp'
+  displayName: 'Build Application'
+  jobs:
+    - job:
+      steps:
+        - task: JavaToolInstaller@1
+          inputs:
+            versionSpec: '17'
+            jdkArchitectureOption: 'x64'
+            jdkSourceOption: 'LocalDirectory'
+            jdkFile: '/home/azureuser/jdk-17.0.15_linux-x64_bin.tar'
+            jdkDestinationDirectory: 'jdk-17.0.15'
+            cleanDestinationDirectory: true
+
+        - task: Maven@4
+          inputs:
+            mavenPomFile: 'pom.xml'
+            publishJUnitResults: true
+            testResultsFiles: '**/surefire-reports/TEST-*.xml'
+            javaHomeOption: 'JDKVersion'
+            jdkVersionOption: '1.17'
+            mavenVersionOption: 'Default'
+            mavenAuthenticateFeed: false
+            effectivePomSkip: false
+            sonarQubeRunAnalysis: false
+
+        - task: Docker@2
+          enabled: true
+          displayName: Docker Build
+          inputs:
+            containerRegistry: 'chatbot-acr'
+            repository: 'azureopenaichatbot-app'
+            command: 'buildAndPush'
+            Dockerfile: '**/Dockerfile'
+            
+        - task: AzureContainerApps@1        
+          enabled: true
+          inputs:
+            azureSubscription: 'Azure_AZDO'
+            acrName: 'acracschatbot'
+            acrUsername: $(ACR_USERNAME)
+            acrPassword: $(ACR_PASSWORD)
+            dockerfilePath: '**/Dockerfile'
+            imageToDeploy: 'acracschatbot.azurecr.io/azureopenaichatbot-app:$(Build.BuildId)'
+            containerAppName: 'backend-java-api-app'
+            resourceGroup: 'rg-azu-e2-acs-chatbot-poc'
+            containerAppEnvironment: 'cae-azu-e2--nycacs-chatbot-poc-ame3-dev'
+            runtimeStack: 'Java'
+            targetPort: '8080'
+            location: 'East US'
+
+        - task: AzureContainerApps@1
+          enabled: false
+          displayName: 'Deploy Azure Container App'
+          inputs:
+            azureSubscription: 'Azure_AZDO'
+            imageToDeploy: 'acracschatbot.azurecr.io/azureopenaichatbot-app:$(Build.BuildId)'
+            containerAppName: 'backend-java-api-app'
+            resourceGroup: 'rg-azu-e2-acs-chatbot-poc'
+            containerAppEnvironment: 'cae-azu-e2--nycacs-chatbot-poc-ame3-dev'
+            runtimeStack: 'Java'
+            targetPort: '8080'
+            location: 'East US'

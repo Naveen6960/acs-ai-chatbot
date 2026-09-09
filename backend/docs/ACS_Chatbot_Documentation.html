@@ -1,0 +1,1721 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ACS AI Chatbot — Intern Handover Documentation</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Serif:ital,wght@0,400;0,600;1,400&family=IBM+Plex+Sans:wght@300;400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap">
+<style>
+  /* ── TOKENS ─────────────────────────────────────────────────────── */
+  :root {
+    --bg: #F4F7FB;
+    --bg-card: #FFFFFF;
+    --bg-sidebar: #0C1C35;
+    --bg-code: #EEF2F8;
+    --bg-callout: #FEF7EC;
+    --text: #1A2840;
+    --text-body: #374151;
+    --text-muted: #6B7280;
+    --text-sidebar: #C9D6E8;
+    --text-sidebar-active: #FFFFFF;
+    --text-code: #1C3A6E;
+    --accent: #1C5FAD;
+    --accent-light: #D6E4F5;
+    --accent-sidebar: #4A90D9;
+    --amber: #D4913A;
+    --amber-bg: #FEF7EC;
+    --amber-border: #F0C87A;
+    --green: #1B7A5A;
+    --green-bg: #EAFAF4;
+    --red: #C0392B;
+    --red-bg: #FDEDEC;
+    --border: #D1DCF0;
+    --border-subtle: #E8EFF8;
+    --sidebar-w: 260px;
+    --content-max: 840px;
+  }
+
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) {
+      --bg: #0A1220;
+      --bg-card: #0F1E34;
+      --bg-sidebar: #060E1A;
+      --bg-code: #0D1B2F;
+      --bg-callout: #1A2A10;
+      --text: #E8EFF8;
+      --text-body: #B8C8DE;
+      --text-muted: #7A90A8;
+      --text-code: #7EC8F0;
+      --accent: #4A90D9;
+      --accent-light: #0F2540;
+      --amber: #E8AC5C;
+      --amber-bg: #1E1508;
+      --amber-border: #6B4A1C;
+      --green: #3EC68A;
+      --green-bg: #0A1E15;
+      --red: #E57373;
+      --red-bg: #1A0A0A;
+      --border: #1E3050;
+      --border-subtle: #152035;
+    }
+  }
+
+  :root[data-theme="dark"] {
+    --bg: #0A1220;
+    --bg-card: #0F1E34;
+    --bg-sidebar: #060E1A;
+    --bg-code: #0D1B2F;
+    --text: #E8EFF8;
+    --text-body: #B8C8DE;
+    --text-muted: #7A90A8;
+    --text-code: #7EC8F0;
+    --accent: #4A90D9;
+    --accent-light: #0F2540;
+    --amber: #E8AC5C;
+    --amber-bg: #1E1508;
+    --amber-border: #6B4A1C;
+    --green: #3EC68A;
+    --green-bg: #0A1E15;
+    --red: #E57373;
+    --red-bg: #1A0A0A;
+    --border: #1E3050;
+    --border-subtle: #152035;
+  }
+
+  /* ── RESET ──────────────────────────────────────────────────────── */
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  html { scroll-behavior: smooth; }
+
+  body {
+    background: var(--bg);
+    color: var(--text-body);
+    font-family: 'IBM Plex Sans', system-ui, sans-serif;
+    font-size: 15px;
+    line-height: 1.7;
+    display: flex;
+    min-height: 100vh;
+  }
+
+  /* ── SIDEBAR ────────────────────────────────────────────────────── */
+  .sidebar {
+    width: var(--sidebar-w);
+    background: var(--bg-sidebar);
+    position: fixed;
+    top: 0; left: 0; bottom: 0;
+    overflow-y: auto;
+    z-index: 100;
+    display: flex;
+    flex-direction: column;
+    flex-shrink: 0;
+    scrollbar-width: thin;
+    scrollbar-color: #1E3A60 transparent;
+  }
+
+  .sidebar-brand {
+    padding: 24px 20px 20px;
+    border-bottom: 1px solid rgba(255,255,255,0.08);
+  }
+
+  .sidebar-brand .org {
+    font-size: 10px;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--accent-sidebar);
+    font-weight: 600;
+    margin-bottom: 4px;
+  }
+
+  .sidebar-brand .proj {
+    font-family: 'IBM Plex Serif', Georgia, serif;
+    font-size: 15px;
+    color: var(--text-sidebar-active);
+    line-height: 1.3;
+    font-weight: 600;
+  }
+
+  .sidebar-brand .version {
+    font-size: 11px;
+    color: var(--text-sidebar);
+    margin-top: 6px;
+    font-family: 'IBM Plex Mono', monospace;
+  }
+
+  .nav-group-label {
+    font-size: 10px;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: rgba(160,185,220,0.5);
+    padding: 20px 20px 6px;
+    font-weight: 600;
+  }
+
+  .nav-link {
+    display: block;
+    padding: 7px 20px;
+    color: var(--text-sidebar);
+    text-decoration: none;
+    font-size: 13px;
+    line-height: 1.4;
+    transition: color 0.15s, background 0.15s;
+    border-left: 2px solid transparent;
+  }
+
+  .nav-link:hover {
+    color: var(--text-sidebar-active);
+    background: rgba(255,255,255,0.05);
+  }
+
+  .nav-link.active {
+    color: var(--text-sidebar-active);
+    border-left-color: var(--accent-sidebar);
+    background: rgba(74,144,217,0.12);
+  }
+
+  .nav-link.sub {
+    padding-left: 34px;
+    font-size: 12px;
+  }
+
+  /* ── MAIN CONTENT ────────────────────────────────────────────────── */
+  .main {
+    margin-left: var(--sidebar-w);
+    flex: 1;
+    min-width: 0;
+  }
+
+  .content {
+    max-width: calc(var(--content-max) + 96px);
+    padding: 0 48px 80px;
+    margin: 0 auto;
+  }
+
+  /* ── COVER PAGE ─────────────────────────────────────────────────── */
+  .cover {
+    background: var(--bg-card);
+    border-bottom: 1px solid var(--border);
+    padding: 64px 48px 56px;
+    margin-bottom: 0;
+  }
+
+  .cover .eyebrow {
+    font-size: 11px;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--accent);
+    font-weight: 600;
+    margin-bottom: 16px;
+  }
+
+  .cover h1 {
+    font-family: 'IBM Plex Serif', Georgia, serif;
+    font-size: 34px;
+    font-weight: 600;
+    color: var(--text);
+    line-height: 1.25;
+    text-wrap: balance;
+    margin-bottom: 12px;
+  }
+
+  .cover .subtitle {
+    font-size: 17px;
+    color: var(--text-muted);
+    margin-bottom: 40px;
+    font-weight: 300;
+  }
+
+  .cover-meta {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(210px, 1fr));
+    gap: 0;
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    overflow: hidden;
+  }
+
+  .cover-meta-item {
+    padding: 14px 18px;
+    border-right: 1px solid var(--border);
+    border-bottom: 1px solid var(--border);
+  }
+
+  .cover-meta-item:nth-child(even) { border-right: none; }
+
+  .cover-meta-item .label {
+    font-size: 10px;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--text-muted);
+    font-weight: 600;
+    margin-bottom: 4px;
+  }
+
+  .cover-meta-item .value {
+    font-size: 14px;
+    color: var(--text);
+    font-weight: 500;
+  }
+
+  /* ── SECTION STYLES ─────────────────────────────────────────────── */
+  .section {
+    padding-top: 56px;
+  }
+
+  .section-eyebrow {
+    font-size: 11px;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--accent);
+    font-weight: 600;
+    margin-bottom: 8px;
+  }
+
+  h2 {
+    font-family: 'IBM Plex Serif', Georgia, serif;
+    font-size: 26px;
+    font-weight: 600;
+    color: var(--text);
+    line-height: 1.3;
+    text-wrap: balance;
+    margin-bottom: 20px;
+    padding-bottom: 14px;
+    border-bottom: 1px solid var(--border);
+  }
+
+  h3 {
+    font-family: 'IBM Plex Serif', Georgia, serif;
+    font-size: 18px;
+    font-weight: 600;
+    color: var(--text);
+    margin-top: 36px;
+    margin-bottom: 12px;
+    line-height: 1.35;
+  }
+
+  h4 {
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--text);
+    margin-top: 24px;
+    margin-bottom: 8px;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+  }
+
+  p { margin-bottom: 14px; max-width: 68ch; }
+
+  ul, ol {
+    padding-left: 20px;
+    margin-bottom: 14px;
+    max-width: 68ch;
+  }
+
+  li { margin-bottom: 6px; }
+
+  a { color: var(--accent); text-decoration: none; }
+  a:hover { text-decoration: underline; }
+
+  /* ── CODE ───────────────────────────────────────────────────────── */
+  code {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 13px;
+    background: var(--bg-code);
+    color: var(--text-code);
+    padding: 1px 6px;
+    border-radius: 3px;
+  }
+
+  pre {
+    background: var(--bg-code);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    padding: 18px 20px;
+    overflow-x: auto;
+    margin-bottom: 18px;
+  }
+
+  pre code {
+    background: none;
+    padding: 0;
+    font-size: 13px;
+    color: var(--text-code);
+    line-height: 1.65;
+  }
+
+  /* ── TABLES ─────────────────────────────────────────────────────── */
+  .table-wrap { overflow-x: auto; margin-bottom: 20px; }
+
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 13.5px;
+    min-width: 500px;
+  }
+
+  th {
+    background: var(--accent);
+    color: #fff;
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.07em;
+    text-transform: uppercase;
+    padding: 10px 14px;
+    text-align: left;
+  }
+
+  td {
+    padding: 10px 14px;
+    border-bottom: 1px solid var(--border-subtle);
+    vertical-align: top;
+    color: var(--text-body);
+  }
+
+  tr:last-child td { border-bottom: none; }
+  tr:nth-child(even) td { background: var(--bg-card); }
+
+  table { border: 1px solid var(--border); border-radius: 6px; overflow: hidden; }
+
+  /* ── CALLOUTS ───────────────────────────────────────────────────── */
+  .callout {
+    border-left: 3px solid var(--amber);
+    background: var(--amber-bg);
+    padding: 14px 18px;
+    border-radius: 0 6px 6px 0;
+    margin-bottom: 18px;
+    max-width: 68ch;
+  }
+
+  .callout.info {
+    border-left-color: var(--accent);
+    background: var(--accent-light);
+  }
+
+  .callout.success {
+    border-left-color: var(--green);
+    background: var(--green-bg);
+  }
+
+  .callout.danger {
+    border-left-color: var(--red);
+    background: var(--red-bg);
+  }
+
+  .callout-label {
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    margin-bottom: 4px;
+    color: var(--amber);
+  }
+
+  .callout.info .callout-label { color: var(--accent); }
+  .callout.success .callout-label { color: var(--green); }
+  .callout.danger .callout-label { color: var(--red); }
+
+  .callout p { max-width: none; margin-bottom: 0; }
+
+  /* ── BADGES ─────────────────────────────────────────────────────── */
+  .badge {
+    display: inline-block;
+    font-size: 11px;
+    font-weight: 600;
+    padding: 2px 8px;
+    border-radius: 3px;
+    letter-spacing: 0.04em;
+    font-family: 'IBM Plex Mono', monospace;
+  }
+
+  .badge-naveen { background: var(--green-bg); color: var(--green); border: 1px solid var(--green); }
+  .badge-existing { background: var(--accent-light); color: var(--accent); border: 1px solid var(--accent); }
+  .badge-method-get { background: #EAF6EA; color: #1A6B2C; border: 1px solid #A3D9A5; }
+  .badge-method-post { background: #EAF0FF; color: #2855B5; border: 1px solid #9DB3F5; }
+  .badge-done { background: var(--green-bg); color: var(--green); }
+  .badge-todo { background: var(--amber-bg); color: var(--amber); }
+
+  /* ── FEATURE CARD ───────────────────────────────────────────────── */
+  .feature-card {
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 24px;
+    margin-bottom: 24px;
+    background: var(--bg-card);
+  }
+
+  .feature-card-header {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 12px;
+  }
+
+  .feature-num {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 11px;
+    font-weight: 500;
+    color: var(--text-muted);
+    min-width: 28px;
+  }
+
+  .feature-card h3 {
+    font-family: 'IBM Plex Serif', Georgia, serif;
+    font-size: 17px;
+    font-weight: 600;
+    color: var(--text);
+    margin: 0;
+  }
+
+  /* ── CHECKLIST ──────────────────────────────────────────────────── */
+  .checklist { list-style: none; padding: 0; }
+  .checklist li {
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
+    padding: 6px 0;
+    border-bottom: 1px solid var(--border-subtle);
+    font-size: 14px;
+  }
+
+  .checklist li:last-child { border-bottom: none; }
+
+  .check-done { color: var(--green); font-size: 16px; flex-shrink: 0; margin-top: 1px; }
+  .check-todo { color: var(--amber); font-size: 16px; flex-shrink: 0; margin-top: 1px; }
+
+  /* ── DIVIDER ────────────────────────────────────────────────────── */
+  .divider {
+    border: none;
+    border-top: 1px solid var(--border);
+    margin: 40px 0;
+  }
+
+  /* ── QUICK START CARD ───────────────────────────────────────────── */
+  .quickstart-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+    gap: 14px;
+    margin-bottom: 28px;
+  }
+
+  .qs-card {
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 18px;
+  }
+
+  .qs-num {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 22px;
+    font-weight: 500;
+    color: var(--accent);
+    margin-bottom: 6px;
+  }
+
+  .qs-card p { font-size: 13px; color: var(--text-muted); max-width: none; margin: 0; }
+
+  /* ── PLACEHOLDER ────────────────────────────────────────────────── */
+  .screenshot-ph {
+    background: var(--border-subtle);
+    border: 2px dashed var(--border);
+    border-radius: 6px;
+    padding: 28px 20px;
+    text-align: center;
+    margin-bottom: 18px;
+    color: var(--text-muted);
+    font-size: 13px;
+  }
+
+  .screenshot-ph strong { display: block; margin-bottom: 4px; font-size: 12px; text-transform: uppercase; letter-spacing: 0.08em; }
+
+  /* ── TIMELINE ───────────────────────────────────────────────────── */
+  .timeline { position: relative; padding-left: 28px; }
+  .timeline::before {
+    content: '';
+    position: absolute;
+    left: 8px; top: 8px; bottom: 8px;
+    width: 2px;
+    background: var(--border);
+  }
+
+  .tl-item {
+    position: relative;
+    margin-bottom: 28px;
+  }
+
+  .tl-item::before {
+    content: '';
+    position: absolute;
+    left: -24px; top: 6px;
+    width: 10px; height: 10px;
+    border-radius: 50%;
+    background: var(--accent);
+    border: 2px solid var(--bg);
+  }
+
+  .tl-date {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 11px;
+    color: var(--text-muted);
+    margin-bottom: 4px;
+  }
+
+  .tl-title {
+    font-weight: 600;
+    color: var(--text);
+    margin-bottom: 4px;
+  }
+
+  .tl-desc { font-size: 13.5px; color: var(--text-body); max-width: 60ch; }
+
+  /* ── RESPONSIVE ─────────────────────────────────────────────────── */
+  @media (max-width: 768px) {
+    .sidebar { transform: translateX(-100%); }
+    .main { margin-left: 0; }
+    .content { padding: 0 20px 60px; }
+    .cover { padding: 40px 20px 36px; }
+    .cover h1 { font-size: 24px; }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    html { scroll-behavior: auto; }
+  }
+</style>
+</head>
+<body>
+
+<!-- ═══ SIDEBAR ══════════════════════════════════════════════════════════ -->
+<nav class="sidebar" aria-label="Document navigation">
+  <div class="sidebar-brand">
+    <div class="org">ACS · OIT · DPSS</div>
+    <div class="proj">AI Chatbot<br>Documentation</div>
+    <div class="version">v1.0 · Summer 2026</div>
+  </div>
+
+  <div class="nav-group-label">Start Here</div>
+  <a href="#cover" class="nav-link">Cover Page</a>
+  <a href="#quickstart" class="nav-link">Quick Start Guide</a>
+
+  <div class="nav-group-label">Project</div>
+  <a href="#overview" class="nav-link">Project Overview</a>
+  <a href="#scope" class="nav-link">Project Scope</a>
+  <a href="#responsibilities" class="nav-link">My Responsibilities</a>
+  <a href="#timeline" class="nav-link">Timeline</a>
+
+  <div class="nav-group-label">Technical</div>
+  <a href="#techstack" class="nav-link">Technology Stack</a>
+  <a href="#environment" class="nav-link">Dev Environment</a>
+  <a href="#setup" class="nav-link">Installation & Setup</a>
+  <a href="#structure" class="nav-link">Project Structure</a>
+  <a href="#architecture" class="nav-link">Architecture</a>
+
+  <div class="nav-group-label">Core Systems</div>
+  <a href="#database" class="nav-link">Database</a>
+  <a href="#backend" class="nav-link">Backend (Spring Boot)</a>
+  <a href="#apis" class="nav-link">API Reference</a>
+  <a href="#auth" class="nav-link">Authentication (MSAL)</a>
+  <a href="#frontend" class="nav-link">Frontend (Angular)</a>
+
+  <div class="nav-group-label">Features</div>
+  <a href="#features" class="nav-link">All 6 Features</a>
+  <a href="#bugs" class="nav-link">Bugs Fixed</a>
+
+  <div class="nav-group-label">Operations</div>
+  <a href="#config" class="nav-link">Configuration</a>
+  <a href="#logging" class="nav-link">Logging</a>
+  <a href="#troubleshooting" class="nav-link">Troubleshooting</a>
+
+  <div class="nav-group-label">Handover</div>
+  <a href="#knownissues" class="nav-link">Known Issues</a>
+  <a href="#future" class="nav-link">Future Enhancements</a>
+  <a href="#ifILeft" class="nav-link">If I Left Today</a>
+  <a href="#handover" class="nav-link">Final Handover</a>
+  <a href="#glossary" class="nav-link">Glossary</a>
+  <a href="#checklist" class="nav-link">Handover Checklist</a>
+</nav>
+
+<!-- ═══ MAIN ══════════════════════════════════════════════════════════════ -->
+<div class="main">
+
+  <!-- COVER -->
+  <div class="cover" id="cover">
+    <div class="eyebrow">NYC Administration for Children's Services · Office of Information Technology</div>
+    <h1>ACS AI Chatbot<br>Project Documentation</h1>
+    <p class="subtitle">Complete technical and handover documentation — Summer Internship 2026</p>
+
+    <div class="cover-meta">
+      <div class="cover-meta-item">
+        <div class="label">Intern / Author</div>
+        <div class="value">Naveen Kshirasagar</div>
+      </div>
+      <div class="cover-meta-item">
+        <div class="label">Supervisor</div>
+        <div class="value">Larisa Isakov</div>
+      </div>
+      <div class="cover-meta-item">
+        <div class="label">Department</div>
+        <div class="value">DPSS · ACS OIT</div>
+      </div>
+      <div class="cover-meta-item">
+        <div class="label">Internship Period</div>
+        <div class="value">Summer 2026</div>
+      </div>
+      <div class="cover-meta-item">
+        <div class="label">Project</div>
+        <div class="value">ACS AI Chatbot</div>
+      </div>
+      <div class="cover-meta-item">
+        <div class="label">Document Version</div>
+        <div class="value">1.0 — Final</div>
+      </div>
+      <div class="cover-meta-item">
+        <div class="label">Last Updated</div>
+        <div class="value">August 2026</div>
+      </div>
+      <div class="cover-meta-item">
+        <div class="label">Status</div>
+        <div class="value">Ready for Handover</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="content">
+
+    <!-- QUICK START -->
+    <div class="section" id="quickstart">
+      <div class="section-eyebrow">New here?</div>
+      <h2>Quick Start Guide</h2>
+      <p>If you're new to this project, read this section first. It gives you everything you need to understand what the project is and get it running in under 10 minutes.</p>
+
+      <div class="quickstart-grid">
+        <div class="qs-card">
+          <div class="qs-num">01</div>
+          <strong>What it is</strong>
+          <p>An AI chatbot that lets ACS child welfare employees ask questions about the CONNECTIONS DCP policy manual and get instant answers.</p>
+        </div>
+        <div class="qs-card">
+          <div class="qs-num">02</div>
+          <strong>Who uses it</strong>
+          <p>ACS child welfare workers who need quick answers from policy documents instead of manually searching PDFs.</p>
+        </div>
+        <div class="qs-card">
+          <div class="qs-num">03</div>
+          <strong>Tech you need</strong>
+          <p>Java 17+, Node.js, Angular CLI, IntelliJ IDEA, and access to Azure credentials (ask your supervisor).</p>
+        </div>
+        <div class="qs-card">
+          <div class="qs-num">04</div>
+          <strong>How to run it</strong>
+          <p>Start backend on port 8080 (IntelliJ), then frontend on port 4200 (<code>ng serve</code>). Details in Setup section.</p>
+        </div>
+        <div class="qs-card">
+          <div class="qs-num">05</div>
+          <strong>Most important files</strong>
+          <p><code>ChatController.java</code>, <code>ChatLogServiceImpl.java</code>, <code>application.properties</code>, Angular <code>app.component.ts</code>.</p>
+        </div>
+        <div class="qs-card">
+          <div class="qs-num">06</div>
+          <strong>Where to go next</strong>
+          <p>Architecture section for the big picture, Features section for what was built this summer, Handover for what's left to do.</p>
+        </div>
+      </div>
+
+      <div class="callout info">
+        <div class="callout-label">Key fact</div>
+        <p>The chatbot existed before this internship. This summer added 6 new features on top of the existing system. Everything marked <span class="badge badge-naveen">Naveen</span> in this doc was built this summer. Everything marked <span class="badge badge-existing">Pre-existing</span> was already there.</p>
+      </div>
+    </div>
+
+    <!-- OVERVIEW -->
+    <div class="section" id="overview">
+      <div class="section-eyebrow">Section 1</div>
+      <h2>Project Overview</h2>
+
+      <h3>What is this project?</h3>
+      <p>The ACS AI Chatbot is an internal tool built for New York City's Administration for Children's Services (ACS). Child welfare employees — caseworkers, supervisors, and other staff — deal with complex policy documents on a daily basis. The most important of these is the <strong>CONNECTIONS DCP Manual</strong>, a lengthy PDF that describes procedures, protocols, and regulations for child protective services work.</p>
+      <p>Before this chatbot existed, employees had to manually search through the manual to find answers. That takes time and is error-prone. The chatbot lets employees type a plain-language question and get an immediate, AI-generated answer backed by the actual policy document. The system is powered by <strong>Azure OpenAI (GPT-4)</strong> and deployed internally at ACS.</p>
+
+      <h3>What problem does it solve?</h3>
+      <ul>
+        <li>Reduces time caseworkers spend searching policy documents</li>
+        <li>Improves consistency in how policies are interpreted and applied</li>
+        <li>Provides a searchable, conversational interface to a complex body of text</li>
+        <li>Tracks usage for compliance review and audit purposes</li>
+      </ul>
+
+      <h3>What did I (Naveen) contribute this summer?</h3>
+      <p>When I joined, the chatbot had basic chat functionality but nothing else. It had no memory — every page refresh wiped the conversation. There was no audit trail. Employees couldn't see their past chats. The backend was on an older version of Spring Boot and had no logging.</p>
+      <p>By the end of the internship, I added 6 features that transformed it from a basic demo into a tool ready for real daily use. The full list is in the Features section.</p>
+
+      <h3>Who are the users?</h3>
+      <p>ACS child welfare employees who are logged in via ACS Microsoft credentials. The chatbot is internal-only — not accessible to the public.</p>
+    </div>
+
+    <!-- SCOPE -->
+    <div class="section" id="scope">
+      <div class="section-eyebrow">Section 2</div>
+      <h2>Project Scope</h2>
+
+      <h3>In Scope (Summer 2026)</h3>
+      <ul>
+        <li>Chat log database storage — saving every conversation to Azure SQL</li>
+        <li>Conversation history sidebar — showing the last 10 chats per employee</li>
+        <li>New Chat button — starting fresh without a page reload</li>
+        <li>MSAL employee identity fix — making the logged-in user's email flow to the backend</li>
+        <li>Spring Boot 4.0.6 upgrade from 3.3.13</li>
+        <li>Structured SLF4J logging throughout the backend</li>
+        <li>Fixing 3 production-blocking issues (content filter, CORS proxy, compilation error)</li>
+      </ul>
+
+      <h3>Out of Scope</h3>
+      <ul>
+        <li>Production deployment to Azure App Service (that's an ACS IT responsibility)</li>
+        <li>Adding new source documents beyond the DCP Manual</li>
+        <li>Mobile app or native app versions</li>
+        <li>Role-based access control (all logged-in employees have the same access)</li>
+        <li>Automated testing suite</li>
+      </ul>
+
+      <h3>Future Scope</h3>
+      <ul>
+        <li>Search bar within the conversation history sidebar</li>
+        <li>Timestamps shown for each past conversation</li>
+        <li>Feedback analytics dashboard</li>
+        <li>Support for multiple source documents</li>
+        <li>Admin panel to view all employee usage statistics</li>
+      </ul>
+    </div>
+
+    <!-- RESPONSIBILITIES -->
+    <div class="section" id="responsibilities">
+      <div class="section-eyebrow">Section 3</div>
+      <h2>My Internship Responsibilities</h2>
+
+      <div class="feature-card">
+        <div class="feature-card-header">
+          <span class="feature-num">R1</span>
+          <h3>Designed and built the chat log database layer</h3>
+          <span class="badge badge-naveen">Naveen</span>
+        </div>
+        <p><strong>Purpose:</strong> Store every conversation permanently in Azure SQL for audit trail and history retrieval.</p>
+        <p><strong>Technologies:</strong> Spring Data JPA, Azure SQL, Java</p>
+        <p><strong>What I did:</strong> Designed the <code>ChatLogEntity</code> data model with the right fields (employee ID, question, answer, timestamp). Created the JPA repository, service interface, and service implementation. Integrated it into the existing chat flow so every POST /api/chat automatically saves to the database. Built two new GET endpoints to retrieve logs.</p>
+        <p><strong>Challenge:</strong> Had to understand the existing code structure before modifying it, since the POST /api/chat endpoint was already built by someone else.</p>
+        <p><strong>Result:</strong> 118+ conversations logged to Azure SQL by end of internship.</p>
+      </div>
+
+      <div class="feature-card">
+        <div class="feature-card-header">
+          <span class="feature-num">R2</span>
+          <h3>Built conversation history sidebar in Angular</h3>
+          <span class="badge badge-naveen">Naveen</span>
+        </div>
+        <p><strong>Purpose:</strong> Let employees see and reload their past conversations without losing context.</p>
+        <p><strong>Technologies:</strong> Angular 17, TypeScript, REST API integration</p>
+        <p><strong>What I did:</strong> Built the Angular sidebar component that calls GET /api/chatlogs/{employeeId}, renders the list of past conversations, and loads a selected conversation back into the main chat window on click.</p>
+        <p><strong>Result:</strong> Employees can now pick up where they left off after a page refresh or browser close.</p>
+      </div>
+
+      <div class="feature-card">
+        <div class="feature-card-header">
+          <span class="feature-num">R3</span>
+          <h3>Fixed MSAL employee identity capture</h3>
+          <span class="badge badge-naveen">Naveen</span>
+        </div>
+        <p><strong>Purpose:</strong> The MSAL login was already in place but the employee's email was never being sent to the backend. Without it, the system had no way to know who was chatting.</p>
+        <p><strong>Technologies:</strong> Angular MSAL library, OAuth 2.0 token extraction, Angular HTTP interceptors</p>
+        <p><strong>What I did:</strong> Fixed the Angular authentication service to correctly extract the logged-in employee's email from the MSAL account object and include it as <code>employeeId</code> in every chat request sent to the backend.</p>
+        <p><strong>Before:</strong> <code>employeeId</code> was <code>null</code> in every database record.<br><strong>After:</strong> <code>employeeId</code> shows the real employee email (e.g., <code>naveen.kshirasagar@acs.nyc.gov</code>).</p>
+      </div>
+
+      <div class="feature-card">
+        <div class="feature-card-header">
+          <span class="feature-num">R4</span>
+          <h3>Upgraded Spring Boot from 3.3.13 to 4.0.6</h3>
+          <span class="badge badge-naveen">Naveen</span>
+        </div>
+        <p><strong>Purpose:</strong> Move the backend to a modern, long-term-support major version.</p>
+        <p><strong>Technologies:</strong> Maven (pom.xml), Spring Boot</p>
+        <p><strong>What I did:</strong> Updated the parent version in <code>pom.xml</code>, resolved all breaking API changes introduced in Spring Boot 4, verified that the application started cleanly and all endpoints responded correctly after the upgrade.</p>
+        <p><strong>Challenge:</strong> Spring Boot 4 introduced breaking changes from Spring Boot 3. Had to research and fix deprecated APIs.</p>
+      </div>
+
+      <div class="feature-card">
+        <div class="feature-card-header">
+          <span class="feature-num">R5</span>
+          <h3>Added SLF4J structured logging throughout the backend</h3>
+          <span class="badge badge-naveen">Naveen</span>
+        </div>
+        <p><strong>Purpose:</strong> Make the application observable — any developer can now trace a request through the logs end to end.</p>
+        <p><strong>Technologies:</strong> SLF4J, Logback</p>
+        <p><strong>What I did:</strong> Added SLF4J loggers to all controller, service, and agent classes. Every key event — incoming request, database save, database fetch, error — is now logged with appropriate log levels (INFO, DEBUG, ERROR).</p>
+      </div>
+
+      <div class="feature-card">
+        <div class="feature-card-header">
+          <span class="feature-num">R6</span>
+          <h3>Diagnosed and fixed 3 production-blocking issues</h3>
+          <span class="badge badge-naveen">Naveen</span>
+        </div>
+        <p>See the Bugs Fixed section for full details on each issue. In summary: fixed the Azure content filter blocking child welfare vocabulary, fixed the Angular CORS proxy so the frontend could reach the backend, and fixed a compilation error caused by an incomplete IDE autocomplete in ChatController.java.</p>
+      </div>
+    </div>
+
+    <!-- TIMELINE -->
+    <div class="section" id="timeline">
+      <div class="section-eyebrow">Section 4</div>
+      <h2>Project Timeline</h2>
+
+      <div class="timeline">
+        <div class="tl-item">
+          <div class="tl-date">Week 1</div>
+          <div class="tl-title">Onboarding & Environment Setup</div>
+          <div class="tl-desc">Got access to the codebase. Set up IntelliJ IDEA, installed Java, Node.js, Angular CLI. Got the frontend and backend running locally. Reviewed the existing code to understand the architecture.</div>
+        </div>
+        <div class="tl-item">
+          <div class="tl-date">Week 2</div>
+          <div class="tl-title">Fixing Production Issues</div>
+          <div class="tl-desc">Diagnosed and fixed the 3 critical issues: Azure content filter, CORS proxy misconfiguration, and MediaType compilation error. Backend and frontend were now fully communicating.</div>
+        </div>
+        <div class="tl-item">
+          <div class="tl-date">Week 3</div>
+          <div class="tl-title">Chat Log Database — Foundation Feature</div>
+          <div class="tl-desc">Built ChatLogEntity, ChatLogRepository, ChatLogService, and ChatLogServiceImpl. Integrated logging into the chat endpoint. Built GET /api/getallchatlogentities and GET /api/chatlogs/{employeeId}. First conversations saved to Azure SQL.</div>
+        </div>
+        <div class="tl-item">
+          <div class="tl-date">Week 4</div>
+          <div class="tl-title">MSAL Fix + Conversation History Sidebar</div>
+          <div class="tl-desc">Fixed the employeeId extraction from MSAL tokens. Built the Angular sidebar component to display and reload past conversations. Added the New Chat button.</div>
+        </div>
+        <div class="tl-item">
+          <div class="tl-date">Week 5</div>
+          <div class="tl-title">Spring Boot Upgrade + SLF4J Logging</div>
+          <div class="tl-desc">Upgraded backend from Spring Boot 3.3.13 to 4.0.6. Added structured SLF4J logging throughout all layers. Verified all endpoints post-upgrade.</div>
+        </div>
+        <div class="tl-item">
+          <div class="tl-date">Week 6 / Final</div>
+          <div class="tl-title">Testing, Documentation, Presentation</div>
+          <div class="tl-desc">End-to-end testing of all features. Code committed to repository. Documentation written. Presented at DPSS Intern Showcase on August 19, 2026.</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- TECH STACK -->
+    <div class="section" id="techstack">
+      <div class="section-eyebrow">Section 5</div>
+      <h2>Technology Stack</h2>
+
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>Technology</th><th>Version</th><th>Purpose</th><th>Notes</th></tr></thead>
+          <tbody>
+            <tr><td>Angular</td><td>17</td><td>Frontend framework — the user interface</td><td>TypeScript-based SPA</td></tr>
+            <tr><td>Spring Boot</td><td>4.0.6</td><td>Backend REST API server</td><td>Upgraded from 3.3.13 this summer</td></tr>
+            <tr><td>Java</td><td>17+</td><td>Backend language</td><td>Required by Spring Boot 4</td></tr>
+            <tr><td>Azure OpenAI API</td><td>GPT-4</td><td>AI model powering chatbot responses</td><td>Hosted on Microsoft Azure; key in application.properties</td></tr>
+            <tr><td>Azure SQL</td><td>Microsoft SQL Server</td><td>Database storing chat logs</td><td>Cloud-hosted; accessed via JDBC</td></tr>
+            <tr><td>Microsoft MSAL</td><td>[TO BE CONFIRMED]</td><td>Authentication — ACS employee login</td><td>OAuth 2.0 / Azure AD</td></tr>
+            <tr><td>SLF4J + Logback</td><td>[TO BE CONFIRMED]</td><td>Structured application logging</td><td>Added this summer to all backend classes</td></tr>
+            <tr><td>Spring Data JPA</td><td>via Spring Boot 4</td><td>ORM layer — Java ↔ database</td><td>Used for ChatLogEntity persistence</td></tr>
+            <tr><td>Maven</td><td>[TO BE CONFIRMED]</td><td>Backend dependency and build manager</td><td>pom.xml is the config file</td></tr>
+            <tr><td>Node.js / npm</td><td>[TO BE CONFIRMED]</td><td>Frontend package manager</td><td>Required to run Angular</td></tr>
+            <tr><td>Angular CLI</td><td>[TO BE CONFIRMED]</td><td>Angular build and serve tool</td><td>Run <code>ng serve</code> to start frontend</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- DEV ENVIRONMENT -->
+    <div class="section" id="environment">
+      <div class="section-eyebrow">Section 6</div>
+      <h2>Development Environment</h2>
+
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>Tool</th><th>Purpose</th><th>Notes</th></tr></thead>
+          <tbody>
+            <tr><td>IntelliJ IDEA</td><td>Backend Java IDE</td><td>Used to run the Spring Boot application</td></tr>
+            <tr><td>VS Code or IntelliJ</td><td>Frontend Angular development</td><td>[TO BE CONFIRMED — what editor was used for Angular]</td></tr>
+            <tr><td>SSMS (SQL Server Management Studio)</td><td>View and query the Azure SQL database</td><td>Connect with Azure SQL credentials; dbo.chatlog table</td></tr>
+            <tr><td>Chrome DevTools → Network tab</td><td>Debugging API requests and responses</td><td>Used to verify employeeId flows correctly in requests</td></tr>
+            <tr><td>Postman or similar</td><td>Testing API endpoints directly</td><td>[TO BE CONFIRMED]</td></tr>
+            <tr><td>Git</td><td>Version control</td><td>Both frontend and backend committed to repo</td></tr>
+            <tr><td>Windows 11</td><td>Development OS</td><td>Machine username: 76D332</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- INSTALLATION -->
+    <div class="section" id="setup">
+      <div class="section-eyebrow">Section 7</div>
+      <h2>Installation & Setup</h2>
+
+      <div class="callout">
+        <div class="callout-label">Before you start</div>
+        <p>You need access to the ACS Azure credentials and the database connection string. Contact Larisa Isakov or Manish to get these. Without them, the backend will not connect to Azure OpenAI or the database.</p>
+      </div>
+
+      <h3>Prerequisites</h3>
+      <ul>
+        <li>Java 17 or higher installed (<code>java -version</code> to check)</li>
+        <li>Node.js and npm installed (<code>node -v</code> to check)</li>
+        <li>Angular CLI: <code>npm install -g @angular/cli</code></li>
+        <li>IntelliJ IDEA (Community or Ultimate)</li>
+        <li>Git access to the repository</li>
+        <li>Azure credentials for OpenAI API and Azure SQL (get from supervisor)</li>
+      </ul>
+
+      <h3>Step 1 — Get the code</h3>
+      <p>Clone or obtain both the frontend and backend from the team repository. The backend folder is named <code>backend-java-api-app-4.0.6</code>. The frontend folder is [TO BE CONFIRMED — ask Larisa or Manish for the frontend repo path].</p>
+
+      <h3>Step 2 — Configure the backend</h3>
+      <p>Open <code>src/main/resources/application.properties</code> in the backend project. Fill in the Azure credentials where marked. The file currently contains real Azure values — do not commit secrets to a public repository. Key properties:</p>
+      <pre><code># Azure OpenAI
+azure.openai.endpoint=[INSERT AZURE OPENAI ENDPOINT]
+azure.openai.api-key=[INSERT API KEY]
+
+# Azure SQL Database
+spring.datasource.url=[INSERT JDBC CONNECTION STRING]
+spring.datasource.username=[INSERT DB USERNAME]
+spring.datasource.password=[INSERT DB PASSWORD]
+
+# How many recent chats to return per employee (currently 10)
+acs.numOfRecents=10</code></pre>
+
+      <h3>Step 3 — Run the backend</h3>
+      <p>Open the backend folder in IntelliJ IDEA. Let Maven download dependencies (it does this automatically). Find the main application class and click the green Run button. The backend starts on <strong>port 8080</strong>. You should see Spring Boot startup logs in the console.</p>
+
+      <h3>Step 4 — Configure the frontend</h3>
+      <p>Navigate to the Angular frontend project folder. Check <code>proxy.conf.json</code> — it should route <code>/api/*</code> to <code>http://localhost:8080</code>. If you're running the backend on a different port, update this file.</p>
+
+      <h3>Step 5 — Run the frontend</h3>
+      <pre><code>cd [frontend-folder]
+npm install
+ng serve</code></pre>
+      <p>The frontend starts on <strong>port 4200</strong>. Open <code>http://localhost:4200</code> in your browser. Log in with your ACS Microsoft credentials.</p>
+
+      <h3>Step 6 — Verify</h3>
+      <ul>
+        <li>You should see the ACS AI Chatbot UI</li>
+        <li>Log in — you should be redirected back after MSAL authentication</li>
+        <li>Type a question — you should get an AI response</li>
+        <li>Check SSMS: a new row should appear in <code>dbo.chatlog</code> with your employee ID</li>
+        <li>The conversation history sidebar should show your chat</li>
+      </ul>
+    </div>
+
+    <!-- STRUCTURE -->
+    <div class="section" id="structure">
+      <div class="section-eyebrow">Section 8</div>
+      <h2>Project Structure</h2>
+
+      <h3>Backend</h3>
+      <pre><code>backend-java-api-app-4.0.6/
+├── src/main/java/com/example/azureopenaiapi/
+│   ├── controller/
+│   │   ├── ChatController.java        ← Main chat + chat log endpoints
+│   │   ├── FeedbackController.java    ← POST /api/feedback (pre-existing)
+│   │   ├── FollowupsController.java   ← POST /api/followups (pre-existing)
+│   │   └── PdfQaController.java       ← PDF QA endpoints (pre-existing)
+│   ├── service/
+│   │   └── ChatLogService.java        ← Interface: defines method signatures
+│   ├── service/impl/
+│   │   └── ChatLogServiceImpl.java    ← Implementation: actual DB logic
+│   ├── repository/
+│   │   └── ChatLogEntityRepository.java ← Spring Data JPA repo
+│   ├── entity/
+│   │   └── ChatLogEntity.java         ← Maps to dbo.chatlog table
+│   └── agent/
+│       └── OrchestratorAgent.java     ← Calls Azure OpenAI (pre-existing)
+└── src/main/resources/
+    └── application.properties         ← All config: Azure keys, DB, settings</code></pre>
+
+      <h3>Frontend (Angular)</h3>
+      <pre><code>[frontend-folder]/               ← [TO BE CONFIRMED — full path]
+├── src/app/
+│   └── app.component.ts             ← Main chat UI, sidebar, new chat
+├── proxy.conf.json                   ← Routes /api/* to localhost:8080
+└── package.json                      ← npm dependencies</code></pre>
+    </div>
+
+    <!-- ARCHITECTURE -->
+    <div class="section" id="architecture">
+      <div class="section-eyebrow">Section 9</div>
+      <h2>System Architecture</h2>
+
+      <h3>High-Level Flow</h3>
+      <pre><code>Employee (browser)
+    │  logs in via ACS Microsoft credentials
+    ▼
+Angular Frontend (localhost:4200)
+    │  extracts employeeId from MSAL token
+    │  sends HTTP POST /api/chat { prompt, employeeId }
+    ▼
+Spring Boot Backend (localhost:8080 / Azure App Service)
+    │  receives request in ChatController
+    │  calls OrchestratorAgent → Azure OpenAI (GPT-4)
+    │  receives AI response
+    │  calls ChatLogService.saveChatLog() → Azure SQL
+    │  returns response to frontend
+    ▼
+Angular Frontend
+    │  displays response in chat UI
+    │  sidebar calls GET /api/chatlogs/{employeeId}
+    ▼
+Employee sees response + history sidebar</code></pre>
+
+      <h3>Component Roles</h3>
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>Component</th><th>Role</th><th>Who built it</th></tr></thead>
+          <tbody>
+            <tr><td>Angular Frontend</td><td>UI: chat window, sidebar, new chat button, MSAL login</td><td>Mostly pre-existing; sidebar + new chat button added by Naveen</td></tr>
+            <tr><td>ChatController.java</td><td>Receives HTTP requests, routes to services</td><td>POST /api/chat pre-existing; 2 GET endpoints by Naveen</td></tr>
+            <tr><td>OrchestratorAgent.java</td><td>Calls Azure OpenAI API and formats response</td><td>Pre-existing</td></tr>
+            <tr><td>ChatLogService + Impl</td><td>Business logic for saving and retrieving chat logs</td><td>Naveen</td></tr>
+            <tr><td>ChatLogEntityRepository</td><td>JPA interface: queries Azure SQL</td><td>Naveen</td></tr>
+            <tr><td>Azure SQL (dbo.chatlog)</td><td>Persistent storage of all conversations</td><td>Table designed by Naveen</td></tr>
+            <tr><td>Azure OpenAI</td><td>GPT-4 model — generates answers to employee questions</td><td>Pre-existing Azure service</td></tr>
+            <tr><td>Microsoft MSAL</td><td>Authenticates employees via ACS Azure AD credentials</td><td>Pre-existing; employeeId extraction fixed by Naveen</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- DATABASE -->
+    <div class="section" id="database">
+      <div class="section-eyebrow">Section 10</div>
+      <h2>Database</h2>
+
+      <p>The database is hosted on <strong>Azure SQL</strong> (Microsoft SQL Server in the cloud). You can connect to it using SSMS with the credentials in <code>application.properties</code>.</p>
+
+      <h3>Table: dbo.chatlog</h3>
+      <p>This is the only table added this summer. It stores one row per conversation turn.</p>
+
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>Column</th><th>Type</th><th>Key</th><th>Nullable</th><th>Description</th></tr></thead>
+          <tbody>
+            <tr><td><code>logid</code></td><td>INT or BIGINT</td><td>Primary Key, Auto-increment</td><td>No</td><td>Unique ID for each chat record</td></tr>
+            <tr><td><code>employee_id</code></td><td>VARCHAR</td><td>—</td><td>Yes</td><td>Employee email from MSAL, e.g. <code>naveen.kshirasagar@acs.nyc.gov</code></td></tr>
+            <tr><td><code>question</code></td><td>VARCHAR(1000)</td><td>—</td><td>Yes</td><td>The question the employee asked. Truncated to 1000 chars if longer.</td></tr>
+            <tr><td><code>answer</code></td><td>VARCHAR(1000)</td><td>—</td><td>Yes</td><td>The AI-generated response. Truncated to 1000 chars if longer.</td></tr>
+            <tr><td><code>creation_timestamp</code></td><td>DATETIME</td><td>—</td><td>Yes</td><td>When the conversation happened. Set automatically by the backend.</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div class="callout">
+        <div class="callout-label">Note on truncation</div>
+        <p>Questions and answers longer than 1000 characters are automatically cut to 1000 before saving. This is intentional — Azure SQL column constraints. If longer storage is needed in the future, increase the column size in the schema and remove the truncation logic in <code>ChatLogServiceImpl.java</code> lines 41–42.</p>
+      </div>
+
+      <h3>Configurable limit: numOfRecents</h3>
+      <p>The number of recent conversations returned for a given employee is controlled by a configuration property, not hardcoded:</p>
+      <pre><code># application.properties — line 97
+acs.numOfRecents=10</code></pre>
+      <p>Change this number to adjust how many past conversations appear in the sidebar. Restart the backend for the change to take effect.</p>
+
+    </div>
+
+    <!-- BACKEND -->
+    <div class="section" id="backend">
+      <div class="section-eyebrow">Section 11</div>
+      <h2>Backend (Spring Boot)</h2>
+
+      <h3>ChatController.java</h3>
+      <p>This is the main entry point for all chat-related HTTP requests. It lives at <code>com.example.azureopenaiapi.controller.ChatController</code>.</p>
+      <pre><code>// ChatRequest — the shape of data sent from the frontend
+public static class ChatRequest {
+    public String prompt;       // the user's question
+    public String agent;        // which AI agent to use
+    public String employeeId;   // employee email from MSAL
+}</code></pre>
+
+      <h3>ChatLogServiceImpl.java</h3>
+      <p>This class does the actual database work. Key methods:</p>
+      <ul>
+        <li><code>getAllChatLogEntity()</code> — returns most recent logs (limited by <code>numOfRecents</code>)</li>
+        <li><code>saveChatLog(employeeId, question, answer)</code> — saves one conversation to Azure SQL</li>
+        <li><code>getRecentChatsByEmployee(employeeId)</code> — returns last N chats for one employee</li>
+      </ul>
+      <p>The <code>numOfRecents</code> value is injected from <code>application.properties</code> via <code>@Value("${acs.numOfRecents}")</code>.</p>
+
+      <h3>Request lifecycle</h3>
+      <pre><code>POST /api/chat
+  → ChatController.chat()
+  → OrchestratorAgent.process(prompt, employeeId)   [calls Azure OpenAI]
+  → ChatLogService.saveChatLog(employeeId, prompt, response)
+  → ChatLogServiceImpl saves to Azure SQL
+  → Returns response to frontend</code></pre>
+    </div>
+
+    <!-- APIS -->
+    <div class="section" id="apis">
+      <div class="section-eyebrow">Section 12</div>
+      <h2>API Reference</h2>
+
+      <h3>Summary</h3>
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>Method</th><th>Endpoint</th><th>Purpose</th><th>Built by</th></tr></thead>
+          <tbody>
+            <tr><td><span class="badge badge-method-post">POST</span></td><td><code>/api/chat</code></td><td>Send a question, get an AI response. Saves to DB automatically.</td><td><span class="badge badge-existing">Pre-existing</span></td></tr>
+            <tr><td><span class="badge badge-method-post">POST</span></td><td><code>/api/feedback</code></td><td>Submit feedback on a response</td><td><span class="badge badge-existing">Pre-existing</span></td></tr>
+            <tr><td><span class="badge badge-method-post">POST</span></td><td><code>/api/followups</code></td><td>Submit follow-up questions</td><td><span class="badge badge-existing">Pre-existing</span></td></tr>
+            <tr><td><span class="badge badge-method-get">GET</span></td><td><code>/api/pdfqa/docs</code></td><td>List available PDF source documents</td><td><span class="badge badge-existing">Pre-existing</span></td></tr>
+            <tr><td><span class="badge badge-method-post">POST</span></td><td><code>/api/pdfqa/ingest</code></td><td>Ingest a new PDF document</td><td><span class="badge badge-existing">Pre-existing</span></td></tr>
+            <tr><td><span class="badge badge-method-post">POST</span></td><td><code>/api/pdfqa/ask</code></td><td>Ask a question against PDF content</td><td><span class="badge badge-existing">Pre-existing</span></td></tr>
+            <tr><td><span class="badge badge-method-post">POST</span></td><td><code>/api/pdfqa/ask-structured</code></td><td>Structured PDF query</td><td><span class="badge badge-existing">Pre-existing</span></td></tr>
+            <tr><td><span class="badge badge-method-get">GET</span></td><td><code>/api/pdfqa/debug-search</code></td><td>Debug endpoint for PDF search</td><td><span class="badge badge-existing">Pre-existing</span></td></tr>
+            <tr><td><span class="badge badge-method-get">GET</span></td><td><code>/api/getallchatlogentities</code></td><td>Get most recent chat logs (all employees)</td><td><span class="badge badge-naveen">Naveen</span></td></tr>
+            <tr><td><span class="badge badge-method-get">GET</span></td><td><code>/api/chatlogs/{employeeId}</code></td><td>Get recent chats for one specific employee</td><td><span class="badge badge-naveen">Naveen</span></td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <h3>POST /api/chat</h3>
+      <p><strong>Purpose:</strong> The main chat endpoint. Send a question, get an AI response. Saves the conversation to Azure SQL automatically.</p>
+      <pre><code>// Request body
+{
+  "prompt": "What is the protocol for a 51A report?",
+  "agent": "default",
+  "employeeId": "naveen.kshirasagar@acs.nyc.gov"
+}
+
+// Response
+{
+  "response": "According to the CONNECTIONS manual, a 51A report..."
+}</code></pre>
+
+      <h3>GET /api/chatlogs/{employeeId}</h3>
+      <p><strong>Purpose:</strong> Returns the most recent chats for a specific employee. Powers the history sidebar. The number of results is controlled by <code>acs.numOfRecents</code> in application.properties (currently 10).</p>
+      <pre><code>GET /api/chatlogs/naveen.kshirasagar@acs.nyc.gov
+
+// Response — array of chat log objects
+[
+  {
+    "logId": 118,
+    "employeeId": "naveen.kshirasagar@acs.nyc.gov",
+    "question": "What is a FASP?",
+    "answer": "A FASP (Family Assessment and Service Plan)...",
+    "creationTimeStamp": "2026-08-15T10:23:45"
+  },
+  ...
+]</code></pre>
+    </div>
+
+    <!-- AUTH -->
+    <div class="section" id="auth">
+      <div class="section-eyebrow">Section 13</div>
+      <h2>Authentication — Microsoft MSAL</h2>
+
+      <h3>What is MSAL?</h3>
+      <p>MSAL stands for Microsoft Authentication Library. It handles the ACS employee login using their existing ACS Microsoft credentials. When an employee opens the chatbot, MSAL redirects them to the Microsoft login page, they log in, and MSAL gives the frontend an authentication token that proves who they are.</p>
+
+      <h3>What was already there (pre-existing)</h3>
+      <p>The Microsoft login flow — the redirect, the login screen, the token — was already implemented before this internship.</p>
+
+      <h3>What I fixed (Naveen)</h3>
+      <p>Although MSAL was handling login correctly, the frontend was not using the token to identify the employee. The <code>employeeId</code> field in every chat request was <code>null</code>. This meant the database could not track which employee sent which message, and the conversation history feature could not work.</p>
+      <p>I fixed the Angular authentication service to correctly extract the employee's email address from the MSAL account object and include it as <code>employeeId</code> in every HTTP request to the backend.</p>
+
+      <h3>How to verify it works</h3>
+      <ol>
+        <li>Log in to the chatbot</li>
+        <li>Open Chrome DevTools → Network tab</li>
+        <li>Send a chat message</li>
+        <li>Click the POST /api/chat request in the Network panel</li>
+        <li>Under Payload, you should see <code>"employeeId": "yourname@acs.nyc.gov"</code></li>
+      </ol>
+
+    </div>
+
+    <!-- FRONTEND -->
+    <div class="section" id="frontend">
+      <div class="section-eyebrow">Section 14</div>
+      <h2>Frontend (Angular 17)</h2>
+
+      <h3>Main file: app.component.ts</h3>
+      <p>The core of the Angular frontend. It handles the chat message loop, renders the conversation, manages the sidebar state, and makes HTTP calls to the Spring Boot backend.</p>
+
+      <h3>Key features in the UI</h3>
+      <ul>
+        <li><strong>Chat window:</strong> Pre-existing. Displays the conversation between the employee and the AI.</li>
+        <li><strong>MSAL login:</strong> Pre-existing. Authenticates the employee on first load.</li>
+        <li><strong>Conversation history sidebar:</strong> Added this summer. Shows past conversations, loads them on click.</li>
+        <li><strong>New Chat button:</strong> Added this summer. Clears the current conversation and resets the interface without a page reload.</li>
+      </ul>
+
+      <h3>proxy.conf.json — critical configuration</h3>
+      <p>This file is essential. Without it, Angular (running on port 4200) cannot communicate with the Spring Boot backend (running on port 8080) due to browser cross-origin restrictions. The proxy file tells the Angular dev server to forward any request starting with <code>/api</code> to <code>http://localhost:8080</code>.</p>
+      <pre><code>{
+  "/api": {
+    "target": "http://localhost:8080",
+    "secure": false,
+    "changeOrigin": true
+  }
+}</code></pre>
+      <p>This was one of the bugs fixed this summer — the proxy was misconfigured and had to be corrected to get the frontend and backend communicating.</p>
+    </div>
+
+    <!-- FEATURES -->
+    <div class="section" id="features">
+      <div class="section-eyebrow">Section 15</div>
+      <h2>All 6 Features (Summer 2026)</h2>
+
+      <div class="feature-card">
+        <div class="feature-card-header">
+          <span class="feature-num">F1</span>
+          <h3>Chat Log to Azure SQL — Full Audit Trail</h3>
+          <span class="badge badge-naveen">Naveen</span>
+        </div>
+        <p>This was the foundational feature — everything else depends on it. Every conversation between an employee and the chatbot is now automatically saved to the Azure SQL database in the <code>dbo.chatlog</code> table. Before this, no conversations were stored anywhere.</p>
+        <ul>
+          <li><strong>Frontend:</strong> No change needed — the save happens on the backend automatically</li>
+          <li><strong>Backend:</strong> <code>ChatLogServiceImpl.saveChatLog()</code> is called inside every POST /api/chat request</li>
+          <li><strong>Database:</strong> <code>dbo.chatlog</code> table with 5 fields (logid, employee_id, question, answer, timestamp)</li>
+        </ul>
+      </div>
+
+      <div class="feature-card">
+        <div class="feature-card-header">
+          <span class="feature-num">F2</span>
+          <h3>Conversation History Sidebar</h3>
+          <span class="badge badge-naveen">Naveen</span>
+        </div>
+        <p>Employees can now see their past conversations in a sidebar and click to reload any of them into the main chat window. This makes the chatbot genuinely useful for workers who come back with follow-up questions across multiple sessions.</p>
+        <ul>
+          <li><strong>Frontend:</strong> New sidebar component in Angular. Calls GET /api/chatlogs/{employeeId} on load.</li>
+          <li><strong>Backend:</strong> GET /api/chatlogs/{employeeId} — returns last 10 chats (configurable)</li>
+          <li><strong>Database:</strong> Queries <code>dbo.chatlog</code> filtered by <code>employee_id</code>, ordered by <code>logid DESC</code></li>
+        </ul>
+      </div>
+
+      <div class="feature-card">
+        <div class="feature-card-header">
+          <span class="feature-num">F3</span>
+          <h3>New Chat Button</h3>
+          <span class="badge badge-naveen">Naveen</span>
+        </div>
+        <p>A simple but important usability improvement. Previously, starting a fresh conversation required a full page reload. The New Chat button clears the current messages and resets the interface instantly, while keeping the history sidebar open so the employee can still access past conversations.</p>
+        <ul>
+          <li><strong>Frontend:</strong> Angular click handler clears the message array and resets state</li>
+          <li><strong>Backend / Database:</strong> No changes needed</li>
+        </ul>
+      </div>
+
+      <div class="feature-card">
+        <div class="feature-card-header">
+          <span class="feature-num">F4</span>
+          <h3>MSAL Employee Identity Fix</h3>
+          <span class="badge badge-naveen">Naveen</span>
+        </div>
+        <p>The Microsoft login existed before this internship. However, the employee's identity was never being captured and sent to the backend — the <code>employeeId</code> field was always <code>null</code>. Without a real employee ID, it was impossible to save records per employee or retrieve their specific chat history. I fixed the Angular code to extract the employee email from the MSAL token and include it in every request.</p>
+        <ul>
+          <li><strong>Before:</strong> <code>employeeId: null</code> in every database record</li>
+          <li><strong>After:</strong> <code>employeeId: "name@acs.nyc.gov"</code> in every record</li>
+        </ul>
+      </div>
+
+      <div class="feature-card">
+        <div class="feature-card-header">
+          <span class="feature-num">F5</span>
+          <h3>Spring Boot 4.0.6 Upgrade</h3>
+          <span class="badge badge-naveen">Naveen</span>
+        </div>
+        <p>Upgraded the backend from Spring Boot 3.3.13 to Spring Boot 4.0.6 — a full major version migration. This was done to move the project to a supported, modern version that will receive security patches and updates. Spring Boot 4 introduced several breaking changes that had to be resolved.</p>
+        <ul>
+          <li>Updated <code>pom.xml</code> parent version</li>
+          <li>Updated dependent library versions that changed with Spring Boot 4</li>
+          <li>Resolved deprecated API usage</li>
+          <li>Verified all endpoints work post-upgrade</li>
+        </ul>
+      </div>
+
+      <div class="feature-card">
+        <div class="feature-card-header">
+          <span class="feature-num">F6</span>
+          <h3>Structured Logging with SLF4J + Logback</h3>
+          <span class="badge badge-naveen">Naveen</span>
+        </div>
+        <p>Added structured application logging throughout the entire Spring Boot backend. Before this, there were no meaningful logs — when something went wrong, there was no way to see what happened. Now every significant event is logged with appropriate severity levels.</p>
+        <ul>
+          <li>INFO: request received, DB save succeeded, records fetched</li>
+          <li>DEBUG: detailed request/response data</li>
+          <li>ERROR: exceptions, failures</li>
+          <li>Covers: ChatController, ChatLogServiceImpl, and all related classes</li>
+        </ul>
+        <p>Example log output when a chat is saved:</p>
+        <pre><code>INFO  ChatLogServiceImpl - Saving chat log for employee: naveen.kshirasagar@acs.nyc.gov
+INFO  ChatLogServiceImpl - Chat log saved successfully for employee: naveen.kshirasagar@acs.nyc.gov</code></pre>
+      </div>
+    </div>
+
+    <!-- BUGS -->
+    <div class="section" id="bugs">
+      <div class="section-eyebrow">Section 16</div>
+      <h2>Production Issues Fixed</h2>
+
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>Bug</th><th>Symptom</th><th>Root Cause</th><th>Fix</th><th>Status</th></tr></thead>
+          <tbody>
+            <tr>
+              <td>Azure content filter blocking queries</td>
+              <td>Chatbot refused to answer questions containing words like "abuse," "neglect," or "maltreatment"</td>
+              <td>Azure OpenAI's default content filtering was too aggressive for child welfare vocabulary</td>
+              <td>Updated Azure API configuration to permit the specific vocabulary required for DCP policy queries</td>
+              <td><span class="badge badge-done">Fixed</span></td>
+            </tr>
+            <tr>
+              <td>Angular frontend could not reach backend</td>
+              <td>All API calls from the frontend returned network errors or CORS errors</td>
+              <td>proxy.conf.json was misconfigured — Angular dev server wasn't routing /api/* calls to localhost:8080</td>
+              <td>Corrected proxy.conf.json to properly forward all /api/* requests to the Spring Boot backend</td>
+              <td><span class="badge badge-done">Fixed</span></td>
+            </tr>
+            <tr>
+              <td>Backend compilation failure</td>
+              <td>Spring Boot application would not start — compilation error in ChatController.java</td>
+              <td>IDE autocomplete left an incomplete token <code>MediaType.n</code> on line 45 — not a valid constant</td>
+              <td>Corrected to <code>MediaType.APPLICATION_JSON_VALUE</code></td>
+              <td><span class="badge badge-done">Fixed</span></td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- CONFIG -->
+    <div class="section" id="config">
+      <div class="section-eyebrow">Section 17</div>
+      <h2>Configuration Reference</h2>
+
+      <p>All backend configuration lives in one file:</p>
+      <p><code>src/main/resources/application.properties</code></p>
+
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>Property</th><th>Purpose</th><th>Current Value</th><th>Notes</th></tr></thead>
+          <tbody>
+            <tr><td><code>azure.openai.endpoint</code></td><td>Azure OpenAI API URL</td><td>[REDACTED]</td><td>Get from Azure portal or supervisor</td></tr>
+            <tr><td><code>azure.openai.api-key</code></td><td>Azure OpenAI API key</td><td>[REDACTED]</td><td>Never commit to public repo</td></tr>
+            <tr><td><code>spring.datasource.url</code></td><td>Azure SQL JDBC connection string</td><td>[REDACTED]</td><td>Includes server name and database name</td></tr>
+            <tr><td><code>spring.datasource.username</code></td><td>Database username</td><td>[REDACTED]</td><td>Azure SQL credential</td></tr>
+            <tr><td><code>spring.datasource.password</code></td><td>Database password</td><td>[REDACTED]</td><td>Azure SQL credential</td></tr>
+            <tr><td><code>acs.numOfRecents</code></td><td>How many recent chats to return per employee</td><td>10</td><td>Safe to change — restart backend after</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div class="callout danger">
+        <div class="callout-label">Security</div>
+        <p>The application.properties file contains real API keys and database passwords. Never commit this file to a public repository. If the keys are accidentally exposed, rotate them immediately in the Azure portal and notify Larisa.</p>
+      </div>
+    </div>
+
+    <!-- LOGGING -->
+    <div class="section" id="logging">
+      <div class="section-eyebrow">Section 18</div>
+      <h2>Logging</h2>
+
+      <p>The backend uses SLF4J with Logback. Logs print to the IntelliJ console (or standard output in production). There is no log file configured yet — in production, Azure App Service captures standard output logs which can be viewed in the Azure portal.</p>
+
+      <h3>What gets logged</h3>
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>Event</th><th>Level</th><th>Class</th></tr></thead>
+          <tbody>
+            <tr><td>Fetching all chat log entities</td><td>INFO</td><td>ChatLogServiceImpl</td></tr>
+            <tr><td>Total records fetched</td><td>INFO</td><td>ChatLogServiceImpl</td></tr>
+            <tr><td>Saving chat log for employee X</td><td>INFO</td><td>ChatLogServiceImpl</td></tr>
+            <tr><td>Chat log saved successfully</td><td>INFO</td><td>ChatLogServiceImpl</td></tr>
+            <tr><td>Fetching recent chats for employee X</td><td>INFO</td><td>ChatLogServiceImpl</td></tr>
+            <tr><td>Total chats fetched for employee</td><td>INFO</td><td>ChatLogServiceImpl</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <h3>How to read logs</h3>
+      <p>When running locally in IntelliJ, logs appear in the Run console at the bottom. Filter by <code>ChatLogServiceImpl</code> to see all database activity. If the chat is not saving, look for the "Saving chat log" line — if it doesn't appear, the save method is not being reached (check the ChatController flow).</p>
+    </div>
+
+    <!-- TROUBLESHOOTING -->
+    <div class="section" id="troubleshooting">
+      <div class="section-eyebrow">Section 19</div>
+      <h2>Troubleshooting Guide</h2>
+
+      <h3>Backend won't start</h3>
+      <div class="callout danger">
+        <div class="callout-label">Symptom</div>
+        <p>IntelliJ shows a compilation error or the Spring Boot application crashes on startup.</p>
+      </div>
+      <p><strong>Check first:</strong> Look at the error message in the IntelliJ console. Common causes:</p>
+      <ul>
+        <li>Missing or wrong Java version — Spring Boot 4 requires Java 17 or later. Run <code>java -version</code>.</li>
+        <li>application.properties has a missing or wrong Azure credential — look for a "connection refused" or "authentication failed" message.</li>
+        <li>Maven dependency download failed — check your internet connection and try refreshing Maven in IntelliJ.</li>
+      </ul>
+
+      <h3>Frontend shows network errors / API calls fail</h3>
+      <p><strong>Check:</strong> Is the backend running on port 8080? Is proxy.conf.json configured to point to <code>http://localhost:8080</code>? Start the Angular server with the proxy flag: <code>ng serve --proxy-config proxy.conf.json</code>.</p>
+
+      <h3>Conversations not saving to database</h3>
+      <p><strong>Check:</strong></p>
+      <ol>
+        <li>In Chrome DevTools → Network, confirm the POST /api/chat request includes a non-null <code>employeeId</code></li>
+        <li>In IntelliJ console, check for "Saving chat log" log line — if missing, the save is not being triggered</li>
+        <li>Check the database credentials in application.properties are correct</li>
+        <li>Check SSMS — can you connect to the database manually?</li>
+      </ol>
+
+      <h3>Sidebar shows no conversation history</h3>
+      <p><strong>Check:</strong></p>
+      <ol>
+        <li>Confirm that <code>employeeId</code> is not null (see above)</li>
+        <li>In Chrome DevTools → Network, look for the GET /api/chatlogs/{employeeId} request — is it being made? What does it return?</li>
+        <li>In SSMS, check: <code>SELECT * FROM dbo.chatlog WHERE employee_id = 'your@email.com'</code> — are there records?</li>
+      </ol>
+
+      <h3>Employee login fails / MSAL errors</h3>
+      <p><strong>Check:</strong> MSAL configuration (client ID, tenant ID, redirect URI) in the Angular app. These must match the Azure AD application registration. Contact Larisa or Manish — they have access to the Azure AD portal to verify the registration settings.</p>
+
+      <h3>Azure content filter blocks a query</h3>
+      <p>If valid child welfare queries are being blocked, the Azure OpenAI content filter configuration may need to be updated. This is done in the Azure OpenAI resource settings in the Azure portal. Contact the team — this requires Azure admin access.</p>
+    </div>
+
+    <!-- KNOWN ISSUES -->
+    <div class="section" id="knownissues">
+      <div class="section-eyebrow">Section 20</div>
+      <h2>Known Issues & Technical Debt</h2>
+
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>Issue</th><th>Impact</th><th>Workaround</th><th>Recommended Fix</th></tr></thead>
+          <tbody>
+            <tr>
+              <td>Questions/answers truncated at 1000 characters</td>
+              <td>Very long responses may be cut off in the database</td>
+              <td>None — stored value is truncated</td>
+              <td>Increase VARCHAR column size in Azure SQL schema and remove the .substring(0, 1000) truncation in ChatLogServiceImpl lines 41–42</td>
+            </tr>
+            <tr>
+              <td>Comment in ChatController.java says "last 5 chats" but actual value is 10</td>
+              <td>Confusing for future developers</td>
+              <td>Ignore the comment, check application.properties</td>
+              <td>Update the comment on line 50 of ChatController.java to say "last {numOfRecents} chats"</td>
+            </tr>
+            <tr>
+              <td>No automated tests</td>
+              <td>Regressions are only caught manually</td>
+              <td>Manual testing after every change</td>
+              <td>Add JUnit tests for ChatLogServiceImpl and API endpoint integration tests</td>
+            </tr>
+            <tr>
+              <td>application.properties contains real secrets</td>
+              <td>Security risk if file is committed to a public repo</td>
+              <td>Do not commit the file — add to .gitignore</td>
+              <td>Move secrets to Azure Key Vault or environment variables in Azure App Service</td>
+            </tr>
+            <tr>
+              <td>Frontend path not documented</td>
+              <td>New developers may struggle to find the Angular project</td>
+              <td>Ask Larisa or Manish</td>
+              <td>Document the exact repo path or folder location</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- FUTURE -->
+    <div class="section" id="future">
+      <div class="section-eyebrow">Section 21</div>
+      <h2>Future Enhancements</h2>
+
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>Enhancement</th><th>Why it matters</th><th>Complexity</th><th>Priority</th></tr></thead>
+          <tbody>
+            <tr><td>Search bar in conversation history sidebar</td><td>Employees may have many past conversations — keyword search would help find them quickly</td><td>Medium</td><td>High</td></tr>
+            <tr><td>Show timestamps in sidebar</td><td>Employees want to know when a conversation happened</td><td>Low</td><td>High</td></tr>
+            <tr><td>Admin analytics dashboard</td><td>Supervisors could see aggregate usage, most-asked questions, employee engagement</td><td>High</td><td>Medium</td></tr>
+            <tr><td>Move secrets to Azure Key Vault</td><td>Security best practice — removes API keys from application.properties</td><td>Medium</td><td>High</td></tr>
+            <tr><td>Automated test suite (JUnit)</td><td>Prevents regressions when new features are added</td><td>Medium</td><td>Medium</td></tr>
+            <tr><td>Support multiple source documents</td><td>Currently only the DCP Manual is indexed — other policy docs could be added</td><td>High</td><td>Low</td></tr>
+            <tr><td>Increase chat log storage limit beyond 1000 chars</td><td>Long AI responses are currently truncated in the database</td><td>Low</td><td>Medium</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- IF I LEFT TODAY -->
+    <div class="section" id="ifILeft">
+      <div class="section-eyebrow">Section 22</div>
+      <h2>If I Left the Project Today</h2>
+
+      <div class="callout success">
+        <div class="callout-label">What is currently working</div>
+        <p>All 6 features are complete and working. The chatbot accepts questions, gets AI responses via Azure OpenAI, saves conversations to Azure SQL, displays conversation history in the sidebar, and correctly identifies the logged-in employee. The backend is on Spring Boot 4.0.6 with full SLF4J logging. All 3 production blockers are resolved.</p>
+      </div>
+
+      <div class="callout">
+        <div class="callout-label">What the next person should do first</div>
+        <p>1. Get access to the Azure credentials from Larisa. 2. Clone the repo. 3. Run the backend (IntelliJ, port 8080) and frontend (ng serve, port 4200). 4. Log in and send a test message. 5. Verify a row appears in dbo.chatlog via SSMS. 6. Review the Known Issues section.</p>
+      </div>
+
+      <h3>What to avoid changing without understanding first</h3>
+      <ul>
+        <li><strong>OrchestratorAgent.java</strong> — this is the core AI integration. It was written before this internship and any change could break the chatbot responses.</li>
+        <li><strong>application.properties Azure credentials</strong> — if these are wrong, nothing works. Test any changes in a dev environment first.</li>
+        <li><strong>proxy.conf.json</strong> — this was a bug that took time to fix. Don't change the /api proxy target without understanding CORS.</li>
+      </ul>
+
+      <h3>Most fragile parts</h3>
+      <ul>
+        <li>Azure OpenAI content filter — can silently block valid queries if configuration drifts</li>
+        <li>MSAL token extraction — if Microsoft updates the MSAL library, the employeeId extraction code may need to be updated</li>
+        <li>Database connection string — if Azure SQL firewall rules change, the backend loses DB access</li>
+      </ul>
+
+      <h3>Who to contact for help</h3>
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>Role</th><th>Name</th><th>Responsibility</th></tr></thead>
+          <tbody>
+            <tr><td>Supervisor / Manager</td><td>Larisa Isakov</td><td>Project oversight, Azure portal access, overall direction</td></tr>
+            <tr><td>Team member</td><td>Manish</td><td>Technical questions, repository access</td></tr>
+            <tr><td>Team member</td><td>Mikulas</td><td>[TO BE CONFIRMED — area of responsibility]</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- HANDOVER -->
+    <div class="section" id="handover">
+      <div class="section-eyebrow">Section 23</div>
+      <h2>Final Project Handover</h2>
+
+      <h3>Current Project Status</h3>
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>Area</th><th>Status</th><th>Notes</th></tr></thead>
+          <tbody>
+            <tr><td>Feature: Chat Log Database</td><td><span class="badge badge-done">Complete</span></td><td>Saving and retrieval working. 118+ records in dbo.chatlog.</td></tr>
+            <tr><td>Feature: Conversation History Sidebar</td><td><span class="badge badge-done">Complete</span></td><td>Loads last 10 chats per employee (configurable)</td></tr>
+            <tr><td>Feature: New Chat Button</td><td><span class="badge badge-done">Complete</span></td><td>Resets conversation without page reload</td></tr>
+            <tr><td>Feature: MSAL Identity Fix</td><td><span class="badge badge-done">Complete</span></td><td>employeeId correctly flowing to DB</td></tr>
+            <tr><td>Feature: Spring Boot 4.0.6 Upgrade</td><td><span class="badge badge-done">Complete</span></td><td>Upgraded from 3.3.13</td></tr>
+            <tr><td>Feature: SLF4J Logging</td><td><span class="badge badge-done">Complete</span></td><td>All backend classes have structured logging</td></tr>
+            <tr><td>Production deployment</td><td><span class="badge badge-todo">Pending</span></td><td>Currently runs in dev. Production deployment is an ACS IT decision.</td></tr>
+            <tr><td>Automated tests</td><td><span class="badge badge-todo">Not started</span></td><td>Recommended for next intern/developer</td></tr>
+            <tr><td>Secrets moved to Azure Key Vault</td><td><span class="badge badge-todo">Not started</span></td><td>Security improvement for future</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <h3>First-Day Setup for the Next Developer</h3>
+      <ol>
+        <li>Contact Larisa Isakov to get repository access and Azure credentials</li>
+        <li>Install: Java 17+, IntelliJ IDEA, Node.js, Angular CLI, Git, SSMS</li>
+        <li>Clone the backend repo and open it in IntelliJ</li>
+        <li>Fill in application.properties with the Azure credentials Larisa provides</li>
+        <li>Run the backend — verify it starts on port 8080</li>
+        <li>Clone the frontend repo (confirm location with Larisa/Manish)</li>
+        <li>Run <code>npm install</code> then <code>ng serve</code> in the frontend folder</li>
+        <li>Open http://localhost:4200, log in, send a test message</li>
+        <li>Open SSMS, connect to Azure SQL, verify a row appeared in dbo.chatlog</li>
+        <li>Review the Known Issues section and Future Enhancements section</li>
+      </ol>
+    </div>
+
+    <!-- GLOSSARY -->
+    <div class="section" id="glossary">
+      <div class="section-eyebrow">Section 24</div>
+      <h2>Glossary</h2>
+
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>Term</th><th>Meaning</th></tr></thead>
+          <tbody>
+            <tr><td>ACS</td><td>Administration for Children's Services — the NYC agency this project is built for</td></tr>
+            <tr><td>OIT</td><td>Office of Information Technology — the ACS technology department</td></tr>
+            <tr><td>DPSS</td><td>Digital Product Strategy & Solutions — the specific team within OIT</td></tr>
+            <tr><td>MSAL</td><td>Microsoft Authentication Library — handles ACS employee login via Azure AD</td></tr>
+            <tr><td>Azure OpenAI</td><td>Microsoft's cloud-hosted version of OpenAI's GPT-4 model</td></tr>
+            <tr><td>Azure SQL</td><td>Microsoft's cloud-hosted SQL Server database service</td></tr>
+            <tr><td>SSMS</td><td>SQL Server Management Studio — the desktop app used to browse and query the database</td></tr>
+            <tr><td>Spring Boot</td><td>Java framework used to build the backend REST API server</td></tr>
+            <tr><td>Angular</td><td>TypeScript framework used to build the frontend chat user interface</td></tr>
+            <tr><td>JPA / Spring Data JPA</td><td>Java framework that maps Java objects (like ChatLogEntity) to database tables automatically</td></tr>
+            <tr><td>SLF4J</td><td>Simple Logging Facade for Java — the logging interface used throughout the backend</td></tr>
+            <tr><td>Logback</td><td>The actual logging implementation that SLF4J routes through</td></tr>
+            <tr><td>REST API</td><td>A way for the frontend and backend to communicate over HTTP using standard methods (GET, POST)</td></tr>
+            <tr><td>CORS</td><td>Cross-Origin Resource Sharing — a browser security rule; the proxy.conf.json file handles this</td></tr>
+            <tr><td>OAuth 2.0</td><td>The authentication standard used by MSAL for secure login</td></tr>
+            <tr><td>DCP Manual</td><td>CONNECTIONS DCP Manual — the ACS policy document the chatbot answers questions about</td></tr>
+            <tr><td>51A Report</td><td>Example ACS child protective services form — the type of real question employees ask the chatbot</td></tr>
+            <tr><td>numOfRecents</td><td>The configuration property that controls how many past conversations appear in the sidebar</td></tr>
+            <tr><td>ChatLogEntity</td><td>The Java class representing one row in the dbo.chatlog database table</td></tr>
+            <tr><td>OrchestratorAgent</td><td>The pre-existing Java class that communicates with the Azure OpenAI API</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- CHECKLIST -->
+    <div class="section" id="checklist">
+      <div class="section-eyebrow">Section 25</div>
+      <h2>Final Handover Checklist</h2>
+
+      <ul class="checklist">
+        <li><span class="check-done">✓</span> Source code committed to repository (frontend + backend)</li>
+        <li><span class="check-done">✓</span> Documentation written and delivered</li>
+        <li><span class="check-done">✓</span> Database documented (dbo.chatlog schema)</li>
+        <li><span class="check-done">✓</span> All APIs documented (10 total, 2 built by Naveen)</li>
+        <li><span class="check-done">✓</span> Configuration properties documented</li>
+        <li><span class="check-done">✓</span> All 6 features documented in detail</li>
+        <li><span class="check-done">✓</span> All 3 bugs/fixes documented</li>
+        <li><span class="check-done">✓</span> Known issues documented</li>
+        <li><span class="check-done">✓</span> Future enhancements documented</li>
+        <li><span class="check-done">✓</span> Troubleshooting guide written</li>
+        <li><span class="check-done">✓</span> First-day setup guide written for next developer</li>
+        <li><span class="check-done">✓</span> Important contacts listed</li>
+        <li><span class="check-done">✓</span> Glossary of terms included</li>
+        <li><span class="check-done">✓</span> Presentation delivered at DPSS Intern Showcase (August 19, 2026)</li>
+        <li><span class="check-todo">○</span> Frontend repository path confirmed [TO BE CONFIRMED]</li>
+        <li><span class="check-todo">○</span> Secrets migrated to Azure Key Vault [Future task]</li>
+        <li><span class="check-todo">○</span> Automated test suite added [Future task]</li>
+        <li><span class="check-todo">○</span> Production deployment confirmed [ACS IT decision]</li>
+      </ul>
+
+      <hr class="divider">
+
+      <p style="color: var(--text-muted); font-size: 13px; text-align: center; margin-top: 24px;">
+        Naveen Kshirasagar &nbsp;·&nbsp; ACS OIT Summer Intern 2026 &nbsp;·&nbsp; Digital Product Strategy & Solutions (DPSS)<br>
+        Documentation version 1.0 &nbsp;·&nbsp; August 2026
+      </p>
+    </div>
+
+  </div><!-- /content -->
+</div><!-- /main -->
+
+<script>
+  // Active nav link on scroll
+  const links = document.querySelectorAll('.nav-link[href^="#"]');
+  const sections = Array.from(links).map(l => document.querySelector(l.getAttribute('href'))).filter(Boolean);
+
+  const obs = new IntersectionObserver(entries => {
+    entries.forEach(e => {
+      if (e.isIntersecting) {
+        links.forEach(l => l.classList.remove('active'));
+        const active = document.querySelector(`.nav-link[href="#${e.target.id}"]`);
+        if (active) active.classList.add('active');
+      }
+    });
+  }, { rootMargin: '-30% 0px -60% 0px' });
+
+  sections.forEach(s => obs.observe(s));
+</script>
+</body>
+</html>
