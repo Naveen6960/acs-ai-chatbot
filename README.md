@@ -9,20 +9,37 @@ A production-grade AI assistant for NYC child welfare caseworkers, powered by a 
 
 ## Architecture
 
-```
-Angular Frontend (MSAL Auth)
-        │
-        ▼
-Spring Boot Backend
-        │
-   ┌────┴────┐
-   │Orchestrator Agent│
-   └────┬────┘
-        │
-   ┌────┴──────────────────────────┐
-   │                               │
-Chat Agent          Search RAG Agent       Oracle DB RAG Agent
-(GPT-4o)        (Azure AI Search)      (Case Data Queries)
+```mermaid
+flowchart TD
+    A["🖥️ Angular Frontend\n(MSAL / Microsoft Entra ID)"]
+    B["⚙️ Spring Boot Backend\n(REST API · Port 8081)"]
+    C["🧠 Orchestrator Agent\n(Routes intent to right agent)"]
+    D["💬 Chat Agent\n(Azure OpenAI GPT-4o)"]
+    E["🔍 Search RAG Agent\n(Azure AI Search · Semantic)"]
+    F["🗄️ Oracle DB RAG Agent\n(Case Data Queries)"]
+    G["📄 PDF Ingestion Pipeline\n(Extract → Chunk → Embed → Index)"]
+    H[("🗃️ Oracle DB\n(Chat Logs)")]
+    I[("☁️ Azure AI Search\n(Vector Index)")]
+
+    A -->|HTTPS| B
+    B --> C
+    C --> D
+    C --> E
+    C --> F
+    G --> I
+    E --> I
+    D -->|Save logs| H
+    F --> H
+
+    style A fill:#1e3a5f,color:#fff,stroke:#4facfe
+    style B fill:#1a1a2e,color:#fff,stroke:#667eea
+    style C fill:#2d1b69,color:#fff,stroke:#a78bfa
+    style D fill:#1a3a2a,color:#fff,stroke:#43e97b
+    style E fill:#3a1a00,color:#fff,stroke:#f97316
+    style F fill:#1a1a3a,color:#fff,stroke:#4facfe
+    style G fill:#2a1a00,color:#fff,stroke:#f59e0b
+    style H fill:#0f0f1a,color:#aaa,stroke:#667eea
+    style I fill:#0f0f1a,color:#aaa,stroke:#f97316
 ```
 
 ## Tech Stack
