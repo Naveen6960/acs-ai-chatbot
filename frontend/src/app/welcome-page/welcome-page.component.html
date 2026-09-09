@@ -1,0 +1,30 @@
+<section class="hero-page">
+  <div class="hero-title">ACS AI Chatbot Tools</div>
+  <img src="GreenStacked.jpg" alt="NYC-ACS Logo" class="logo-fixed" />
+</section>
+
+<div class="tools-wrapper horizontal-tools">
+  <div class="tool-box" (click)="goToChatBot()">
+    <h2>DCP Manual Search</h2>
+    <p class="tool-description"> Instantly search the DCP manual to find relevant policies, procedures, and guidelines.</p>
+    <button class="launch-button" (click)="$event.stopPropagation(); goToChatBot()"></button>
+  </div>
+
+  <div class="tool-box" (click)="goToTool2()">
+    <h2>Chatbot Open AI</h2>
+    <p class="tool-description">Search Azure Open AI</p>
+    <button class="launch-button" (click)="$event.stopPropagation(); goToTool2()"></button>
+  </div>
+
+  <div class="tool-box" (click)="goToTool3()">
+    <h2>IT Service Desk</h2>
+    <p class="tool-description">Troubleshoot technical issues and request IT support in just a few steps.</p>
+    <button class="launch-button" (click)="$event.stopPropagation(); goToTool3()"></button>
+  </div>
+
+  <div class="tool-box" (click)="goToTool4()">
+    <h2>Case Search</h2>
+    <p class="tool-description">Securely look up case information and review related records with ease.</p>
+    <button class="launch-button" (click)="$event.stopPropagation(); goToTool4()"></button>
+  </div>
+</div>

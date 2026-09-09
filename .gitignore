@@ -1,0 +1,27 @@
+# Java / Maven
+target/
+logs/
+test-pdfs/
+bin/
+*.class
+*.jar
+*.war
+
+# IDE
+.idea/
+.vscode/
+.vs/
+.metadata/
+.settings/
+.classpath
+.factorypath
+.project
+
+# Angular
+node_modules/
+dist/
+.angular/
+
+# Secrets
+*.env
+application-local.properties

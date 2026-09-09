@@ -1,0 +1,182 @@
+<section class="whole-page" [class.sidebar-open]="menuOpen">
+  <!-- NAVEEN - [class.sidebar-open] shifts the main content right when sidebar is open -->
+
+  <!-- Sidebar: hamburger, Welcome, PDF only -->
+  <div class="sidebar" [class.open]="menuOpen">
+    <div class="hamburger" (click)="toggleMenu()">☰</div>
+    <div class="menu-items" [class.visible]="menuOpen">
+      <button (click)="goToWelcome()">Welcome</button>
+      <button class="sidebar-btn pdf-btn" (click)="openPdf()">
+        DCP Manual (PDF)
+      </button>
+    </div>
+  </div>
+
+  <!-- NAVEEN - Separate Chat History Panel (NOT inside sidebar) -->
+  <!-- WORKFLOW: on page load, ngOnInit() calls loadChatHistory() -->
+  <!-- loadChatHistory() calls GET /api/chatlogs/{employeeId} from backend -->
+  <!-- backend returns last 10 chats for logged-in employee from Azure DB -->
+  <!-- results stored in chatHistory array and displayed here -->
+  <div class="chat-history-panel">
+
+    <!-- NAVEEN - clears the screen only, Azure DB history stays safe -->
+    <button class="new-chat-btn" (click)="newChat()">+ New Chat</button>
+
+    <div *ngIf="chatHistory.length > 0" class="history-section">
+      <div class="history-label">Recent Chats</div>
+
+      <!-- NAVEEN - clicking a recent chat loads its question and answer into the main chat area -->
+      <!-- loadChat() populates messages[] with the selected chat's question and answer -->
+      <div
+        *ngFor="let chat of chatHistory"
+        class="history-item"
+        [title]="chat.question"
+        (click)="loadChat(chat)"
+      >
+        <span class="history-title">{{ chat.question }}</span>
+      </div>
+    </div>
+
+  </div>
+
+  <img
+    src="GreenStacked.jpg"
+    alt="NYC-ACS Logo"
+    class="logo-fixed"
+    [class.logo-shifted]="menuOpen"
+  />
+
+  <div class="chatbot-title">DCP Manual Search</div>
+
+  <div class="chat-container" [class.expanded]="hasSubmittedOnce">
+
+    <div class="chat-messages" #chatContainer>
+
+      <div *ngFor="let msg of messages; let i = index" [ngClass]="msg.role">
+
+        <div class="msg-bubble">
+          <span>{{ msg.content }}</span>
+        </div>
+
+        <div *ngIf="msg.role === 'assistant'" class="msg-tools">
+          <!-- Copy button -->
+          <button
+            class="copy-btn"
+            type="button"
+            (click)="copy(msg.content, i)"
+            [attr.aria-label]="'Copy response to clipboard'"
+            title="Copy"
+          >
+            <ng-container *ngIf="copiedIndex !== i; else copiedTemplate">
+              <svg xmlns="http://www.w3.org/2000/svg" height="16" width="16" fill="currentColor" viewBox="0 0 16 16" aria-hidden="true">
+                <path d="M10 1.5H6a.5.5 0 0 0-.5.5v1H4.5A1.5 1.5 0 0 0 3 4.5v9A1.5 1.5 0 0 0 4.5 15h7A1.5 1.5 0 0 0 13 13.5v-9A1.5 1.5 0 0 0 11.5 3H10.5v-1a.5.5 0 0 0-.5-.5zM6 2h4v1H6V2z"/>
+              </svg>
+            </ng-container>
+            <ng-template #copiedTemplate>Copied!</ng-template>
+          </button>
+
+          <!-- Thumbs Up -->
+          <button
+            class="thumb-btn"
+            type="button"
+            [class.active-up]="msg.feedback === 'up'"
+            [disabled]="msg.feedback"
+            (click)="sendFeedback('up', i)"
+            [attr.aria-pressed]="msg.feedback==='up'"
+            aria-label="Thumbs up"
+            title="Helpful"
+          >
+            <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 16 16" fill="currentColor" aria-hidden="true">
+              <path d="M6.956 1.745C7.021.81 7.908.087 8.864.325l.261.066c.57.145.983.676.993 1.262l.007.244c.014.766-.07 1.674-.36 2.62-.29.946-.87 1.902-1.664 2.87H12a1.5 1.5 0 0 1 1.415 1.986l-1.5 4A1.5 1.5 0 0 1 10.5 14H6.5a1.5 1.5 0 0 1-1.5-1.5V6.972c0-.38.144-.747.404-1.028l1.552-1.67c.277-.298.44-.68.5-1.06zM1.5 6.972A.5.5 0 0 1 2 6.5h2v7H2a.5.5 0 0 1-.5-.5v-6z"/>
+            </svg>
+          </button>
+
+          <!-- Thumbs Down -->
+          <button
+            class="thumb-btn"
+            type="button"
+            [class.active-down]="msg.feedback === 'down'"
+            [disabled]="msg.feedback"
+            (click)="sendFeedback('down', i)"
+            [attr.aria-pressed]="msg.feedback==='down'"
+            aria-label="Thumbs down"
+            title="Not helpful"
+          >
+            <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 16 16" fill="currentColor" aria-hidden="true">
+              <path d="M9.044 14.255C8.979 15.19 8.092 15.913 7.136 15.675l-.261-.066a1.5 1.5 0 0 1-.993-1.262l-.007-.244c-.014-.766.07-1.674.36-2.62.29-.946.87-1.902 1.664-2.87H4a1.5 1.5 0 0 1-1.415-1.986l1.5-4A1.5 1.5 0 0 1 5.5 2h4a1.5 1.5 0 0 1 1.5 1.5v5.528c0 .38-.144.747-.404 1.028l-1.552 1.67c-.277.298-.44.68-.5 1.06zM14.5 9.028a.5.5 0 0 1-.5.472h-2V2h2a.5.5 0 0 1 .5.5v6.528z"/>
+            </svg>
+          </button>
+
+        </div>
+
+        <!-- Source citations -->
+        <div *ngIf="msg.role === 'assistant' && msg.citations?.length" class="citations-row">
+          <button
+            *ngFor="let c of msg.citations"
+            class="citation-chip"
+            type="button"
+            (click)="openPdfPage(c.docPath, c.pageNumber, c.fileName)"
+          >
+            📄 Source: {{ c.fileName }}, page {{ c.pageNumber }}
+          </button>
+        </div>
+
+        <!-- Follow Ups -->
+        <div *ngIf="msg.role === 'assistant' && msg.followUps?.length" class="followups-row">
+          <button
+            class="followup-chip"
+            *ngFor="let q of msg.followUps"
+            type="button"
+            (click)="sendFollowUp(q)"
+          >
+            {{ q }}
+          </button>
+        </div>
+
+      </div>
+    </div>
+
+    <div class="chat-input-container" [class.active]="inputFocused">
+
+      <form class="chat-input" (ngSubmit)="sendMessage(chatInput)">
+        <textarea
+          #chatInput
+          [(ngModel)]="userInput"
+          name="userInput"
+          placeholder="Type your message..."
+          autocomplete="off"
+          [disabled]="loading"
+          rows="1"
+          (focus)="onFocus()"
+          (blur)="onBlur()"
+          (input)="autoResize(chatInput)"
+        ></textarea>
+      </form>
+
+      <div class="chat-actions">
+        <button class="clear-btn" (click)="clearChat()" [disabled]="loading">Clear</button>
+        <button class="send-btn" (click)="sendMessage(chatInput)" [disabled]="loading || !userInput.trim()">Send</button>
+      </div>
+
+    </div>
+
+  </div>
+
+  <!-- PDF Page Modal -->
+  <div class="pdf-modal-overlay" *ngIf="pdfModalOpen" (click)="closePdfModal()">
+    <div class="pdf-modal-box" (click)="$event.stopPropagation()">
+      <div class="pdf-modal-header">
+        <span class="pdf-modal-label">{{ pdfModalLabel }}</span>
+        <button class="pdf-modal-close" type="button" (click)="closePdfModal()">✕</button>
+      </div>
+      <div class="pdf-modal-body">
+        <img [src]="pdfModalSrc" alt="PDF page" class="pdf-modal-img" />
+      </div>
+    </div>
+  </div>
+
+  <div class="chat-disclaimer">
+    <span>⚠️ Disclaimer: This chatbot is for informational purposes only and may not provide complete or authoritative answers. For official guidance, please consult ACS policies or contact support.</span>
+  </div>
+
+</section>

@@ -1,0 +1,83 @@
+# Node.js
+# Build a general Node.js project with npm.
+# Add steps that analyze code, save build artifacts, deploy, and more:
+# https://docs.microsoft.com/azure/devops/pipelines/languages/javascript
+
+trigger:
+- none
+
+pool:
+  vmImage: ubuntu-latest
+#  name: ACS-AZURE-NP-AGENT
+
+stages:
+- stage: 'BuildApp'
+  displayName: 'Build Application'
+  jobs:
+    - job:
+
+      steps:
+        - task: NodeTool@0
+          enabled: true
+          inputs:
+            versionSource: 'spec'
+            versionSpec: '20.x'
+
+        - task: CmdLine@2
+          enabled: false
+          displayName: 'Clean NPM Cache'
+          inputs:
+            script: 'npm cache clean --force'
+
+        - task: CmdLine@2
+          displayName: 'Install Angular CLI'
+          inputs:
+            script: 'npm install -g @angular/cli'  
+
+        - task: CmdLine@2
+          displayName: 'Install NPM Packages'
+          inputs:
+            script: |
+              npm install --legacy-peer-deps
+              npm install @azure/msal-browser 
+              npm install @azure/msal-angular bootstrap
+
+        - task: CmdLine@2
+          displayName: 'NPM Build'
+          inputs:
+            script: 'npm run build -- --configuration production'
+            workingDirectory: '$(build.SourcesDirectory)'
+                
+
+        - task: ArchiveFiles@2
+          inputs:
+            rootFolderOrFile: '$(build.SourcesDirectory)/dist/client/browser'
+            includeRootFolder: false
+            archiveType: 'zip'
+            archiveFile: '$(Build.ArtifactStagingDirectory)/chatbot.zip'
+            replaceExistingArchive: true
+
+
+        - task: PublishBuildArtifacts@1
+          inputs:
+            PathtoPublish: '$(Build.ArtifactStagingDirectory)/chatbot.zip'
+            ArtifactName: 'drop'
+            publishLocation: 'Container'  
+
+- stage: 'DeployApp'
+  displayName: 'Deploy Application'
+  dependsOn: 'BuildApp'
+  jobs:
+    - job:
+      steps:
+      - download: current
+        artifact: 'drop'
+
+      - task: AzureWebApp@1
+        inputs:
+          azureSubscription: 'Azure_AZDO'
+          appType: 'webAppLinux'
+          appName: 'acs-chatbot-web-app'
+          package: '$(Pipeline.Workspace)/drop/chatbot.zip'
+          runtimeStack: 'NODE|22-lts'
+          startUpCommand: 'pm2 serve /home/site/wwwroot --no-daemon --spa'

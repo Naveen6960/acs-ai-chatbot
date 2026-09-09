@@ -1,0 +1,23 @@
+<div class="chat-container">
+  <div class="chat-header">
+      <img src="GreenStacked.jpg" alt="NYC-ACS Logo" class="logo" >
+    <h2 class="title">Chatbot</h2>
+    <button class="clear-btn" (click)="clearChat()" type="button">Clear</button>
+  </div>
+  <div class="chat-messages">
+    <div *ngFor="let msg of messages" [ngClass]="msg.role">
+      <div class="msg-bubble">
+        <span>{{ msg.content }}</span>
+      </div>
+    </div>
+    <div *ngIf="loading" class="assistant">
+      <div class="msg-bubble loading">
+        <span>...</span>
+      </div>
+    </div>
+  </div>
+  <form class="chat-input blinking" (ngSubmit)="sendMessage()">
+    <input [(ngModel)]="userInput" name="userInput" placeholder="Type your message..." autocomplete="off" [disabled]="loading" />
+    <button type="submit" [disabled]="loading || !userInput.trim()">Send</button>
+  </form>  
+</div>
